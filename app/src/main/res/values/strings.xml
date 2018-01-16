@@ -50,6 +50,9 @@
     <string name="fragment_input_hostname_hostname">Server</string>
     <string name="fragment_input_hostname_server_hint">open.rocket.chat</string>
     <string name="fragment_input_hostname_connect">CONNECT</string>
+    <string name="fragment_input_certificate_url_download_url">Download URL</string>
+    <string name="fragment_input_certificate_url_download_url_hint">download.url.com</string>
+    <string name="fragment_input_certificate_url_download">DOWNLOAD</string>
     <string name="fragment_login_username_or_email">Username or email</string>
     <string name="fragment_login_password">Password</string>
     <string name="fragment_login_sign_up">SIGN UP</string>

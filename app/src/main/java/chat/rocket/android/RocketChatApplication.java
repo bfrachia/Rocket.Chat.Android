@@ -35,6 +35,7 @@ public class RocketChatApplication extends MultiDexApplication {
     @Override
     public void onCreate() {
         super.onCreate();
+        instance = this;
         RocketChatCache.INSTANCE.initialize(this);
         JobManager.create(this).addJobCreator(new RocketChatJobCreator());
         DDPClient.initialize(OkHttpHelper.INSTANCE.getClientForWebSocket());
@@ -63,6 +64,5 @@ public class RocketChatApplication extends MultiDexApplication {
             Logger.INSTANCE.report(e);
         });
 
-        instance = this;
     }
 }
