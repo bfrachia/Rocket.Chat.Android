@@ -47,12 +47,12 @@
       android:inputType="textUri"
       android:maxLines="1"
       app:layout_constraintTop_toBottomOf="@+id/hostnameTextView"
-      app:layout_constraintBottom_toTopOf="@+id/btn_connect"
+      app:layout_constraintBottom_toTopOf="@+id/btn_download"
       app:layout_constraintLeft_toLeftOf="parent"
       app:layout_constraintRight_toRightOf="parent" />
 
     <Button
-      android:id="@+id/btn_connect"
+      android:id="@+id/btn_download"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_marginTop="@dimen/margin_8"

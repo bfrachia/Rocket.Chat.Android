@@ -13,12 +13,14 @@ public interface DownloadCertificateContract {
 
     void showConnectionError();
 
-    void showHome();
+    void showAddServerActivity();
+
+    void invalidCertAndPassword();
   }
 
   interface Presenter extends BaseContract.Presenter<View> {
 
-    void attemptDownload(String certificateUrl);
+    void attemptDownload(String certificateUrl, String certificatePassword);
   }
 
 }

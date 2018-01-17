@@ -47,7 +47,7 @@ public class DownloadCertificateFragment extends AbstractFragment implements Dow
 
         container = rootView.findViewById(R.id.container);
         waitingView = rootView.findViewById(R.id.waiting);
-        rootView.findViewById(R.id.btn_connect).setOnClickListener(view -> handleConnect());
+        rootView.findViewById(R.id.btn_download).setOnClickListener(view -> handleCertDownload());
     }
 
     private void setupVersionInfo() {
@@ -55,9 +55,9 @@ public class DownloadCertificateFragment extends AbstractFragment implements Dow
         versionInfoView.setText(getString(R.string.version_info_text, BuildConfig.VERSION_NAME));
     }
 
-    private void handleConnect() {
+    private void handleCertDownload() {
         hideSoftKeyboard();
-//        presenter.connectTo(getHostname());
+        presenter.attemptDownload(getDownloadUrl(), getCertificatePassword());
     }
 
     private void hideSoftKeyboard() {
@@ -79,8 +79,14 @@ public class DownloadCertificateFragment extends AbstractFragment implements Dow
         super.onDestroyView();
     }
 
-    private String getHostname() {
-        final TextView editor = (TextView) rootView.findViewById(R.id.editor_hostname);
+    private String getDownloadUrl() {
+        final TextView editor = (TextView) rootView.findViewById(R.id.editor_download_url);
+
+        return TextUtils.or(TextUtils.or(editor.getText(), editor.getHint()), "").toString().toLowerCase();
+    }
+
+    private String getCertificatePassword() {
+        final TextView editor = (TextView) rootView.findViewById(R.id.editor_password);
 
         return TextUtils.or(TextUtils.or(editor.getText(), editor.getHint()), "").toString().toLowerCase();
     }
@@ -114,8 +120,16 @@ public class DownloadCertificateFragment extends AbstractFragment implements Dow
     }
 
     @Override
-    public void showHome() {
-        LaunchUtil.showMainActivity(getContext());
+    public void showAddServerActivity() {
+        LaunchUtil.showAddServerActivity(getContext());
         getActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
+
+    @Override
+    public void invalidCertAndPassword() {
+        showError(getString(R.string.connection_error_certificate_password_combination));
+        waitingView.setVisibility(View.GONE);
+        container.setVisibility(View.VISIBLE);
+    }
+
 }

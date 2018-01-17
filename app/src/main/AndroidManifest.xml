@@ -108,6 +108,8 @@
             </intent-filter>
         </service>
 
+        <service android:name=".helper.DownloadCertificateService"/>
+
         <receiver
             android:name=".push.PushManager$DeleteReceiver"
             android:exported="false" />

@@ -82,7 +82,7 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
         super.onResume();
         ConnectivityManagerApi connectivityManager = ConnectivityManager.getInstance(getApplicationContext());
 
-        if (!CertificateHelper.Companion.hasCertificate(this)) {
+        if (!CertificateHelper.Companion.hasCertificate(this) || RocketChatCache.INSTANCE.getCertPassword() == null) {
             showDownloadCertificateScreen();
         }
         else {
