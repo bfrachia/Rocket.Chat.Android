@@ -1,4 +1,4 @@
-package chat.rocket.android.fragment.add_server;
+package chat.rocket.android.fragment.download_cert;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -14,31 +14,29 @@ import chat.rocket.android.LaunchUtil;
 import chat.rocket.android.R;
 import chat.rocket.android.fragment.AbstractFragment;
 import chat.rocket.android.helper.TextUtils;
-import chat.rocket.android.service.ConnectivityManager;
 
 /**
  * Input server host.
  */
-public class InputHostnameFragment extends AbstractFragment implements InputHostnameContract.View {
+public class DownloadCertificateFragment extends AbstractFragment implements DownloadCertificateContract.View {
 
-    private InputHostnameContract.Presenter presenter;
+    private DownloadCertificateContract.Presenter presenter;
     private ConstraintLayout container;
     private View waitingView;
 
-    public InputHostnameFragment() {
+    public DownloadCertificateFragment() {
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Context appContext = getContext().getApplicationContext();
-        presenter = new InputHostnamePresenter(ConnectivityManager.getInstance(appContext));
+        presenter = new DownloadCertificatePresenter();
     }
 
     @Override
     protected int getLayout() {
-        return R.layout.fragment_input_hostname;
+        return R.layout.fragment_input_certificate_url;
     }
 
     @Override
@@ -47,7 +45,7 @@ public class InputHostnameFragment extends AbstractFragment implements InputHost
 
         container = rootView.findViewById(R.id.container);
         waitingView = rootView.findViewById(R.id.waiting);
-        rootView.findViewById(R.id.btn_download).setOnClickListener(view -> handleConnect());
+        rootView.findViewById(R.id.btn_download).setOnClickListener(view -> handleCertDownload());
     }
 
     private void setupVersionInfo() {
@@ -55,9 +53,9 @@ public class InputHostnameFragment extends AbstractFragment implements InputHost
         versionInfoView.setText(getString(R.string.version_info_text, BuildConfig.VERSION_NAME));
     }
 
-    private void handleConnect() {
+    private void handleCertDownload() {
         hideSoftKeyboard();
-        presenter.connectTo(getHostname());
+        presenter.attemptDownload(getDownloadUrl(), getCertificatePassword());
     }
 
     private void hideSoftKeyboard() {
@@ -79,8 +77,14 @@ public class InputHostnameFragment extends AbstractFragment implements InputHost
         super.onDestroyView();
     }
 
-    private String getHostname() {
-        final TextView editor = (TextView) rootView.findViewById(R.id.editor_hostname);
+    private String getDownloadUrl() {
+        final TextView editor = (TextView) rootView.findViewById(R.id.editor_download_url);
+
+        return TextUtils.or(TextUtils.or(editor.getText(), editor.getHint()), "").toString().toLowerCase();
+    }
+
+    private String getCertificatePassword() {
+        final TextView editor = (TextView) rootView.findViewById(R.id.editor_password);
 
         return TextUtils.or(TextUtils.or(editor.getText(), editor.getHint()), "").toString().toLowerCase();
     }
@@ -104,18 +108,21 @@ public class InputHostnameFragment extends AbstractFragment implements InputHost
     }
 
     @Override
-    public void showInvalidServerError() {
-        showError(getString(R.string.input_hostname_invalid_server_message));
+    public void showInvalidUrlError() {
+        showError(getString(R.string.input_download_certificate_url_invalid_url_message));
     }
 
     @Override
-    public void showConnectionError() {
-        showError(getString(R.string.connection_error_try_later));
-    }
-
-    @Override
-    public void showHome() {
-        LaunchUtil.showMainActivity(getContext());
+    public void showAddServerActivity() {
+        LaunchUtil.showAddServerActivity(getContext());
         getActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
+
+    @Override
+    public void invalidCertAndPassword() {
+        waitingView.setVisibility(View.GONE);
+        container.setVisibility(View.VISIBLE);
+        showError(getString(R.string.connection_error_certificate_password_combination));
+    }
+
 }

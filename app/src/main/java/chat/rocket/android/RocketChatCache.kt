@@ -28,6 +28,7 @@ object RocketChatCache {
     private val KEY_USER_ID = "KEY_USER_ID"
     private val KEY_USER_NAME = "KEY_USER_NAME"
     private val KEY_USER_USERNAME = "KEY_USER_USERNAME"
+    private val KEY_CERT_PWD = "KEY_CERT_PWD"
 
     private lateinit var sharedPreferences: SharedPreferences
 
@@ -431,4 +432,12 @@ object RocketChatCache {
     }
 
     fun getUserUsername(): String? = getString(KEY_USER_USERNAME, null)
+
+    fun setCertPassword(password: String?) {
+        password?.let {
+            setString(KEY_CERT_PWD, password)
+        }
+    }
+
+    fun getCertPassword(): String? = getString(KEY_CERT_PWD, null)
 }

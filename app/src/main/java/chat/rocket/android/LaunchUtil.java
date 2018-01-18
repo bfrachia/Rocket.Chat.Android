@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import chat.rocket.android.activity.AddServerActivity;
+import chat.rocket.android.activity.DownloadCertificateActivity;
 import chat.rocket.android.activity.LoginActivity;
 import chat.rocket.android.activity.MainActivity;
 
@@ -26,6 +27,15 @@ public class LaunchUtil {
      */
     public static void showAddServerActivity(Context context) {
         Intent intent = new Intent(context, AddServerActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        context.startActivity(intent);
+    }
+
+    /**
+     * launch DownloadCertificateActivity with proper flags.
+     */
+    public static void showDownloadCertificateActivity(Context context) {
+        Intent intent = new Intent(context, DownloadCertificateActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }

@@ -27,7 +27,9 @@ import chat.rocket.android.RocketChatCache;
 import chat.rocket.android.api.MethodCallHelper;
 import chat.rocket.android.fragment.chatroom.HomeFragment;
 import chat.rocket.android.fragment.chatroom.RoomFragment;
+import chat.rocket.android.fragment.download_cert.DownloadCertificateFragment;
 import chat.rocket.android.fragment.sidebar.SidebarMainFragment;
+import chat.rocket.android.helper.CertificateHelper;
 import chat.rocket.android.helper.KeyboardHelper;
 import chat.rocket.android.service.ConnectivityManager;
 import chat.rocket.android.service.ConnectivityManagerApi;
@@ -79,23 +81,29 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
     protected void onResume() {
         super.onResume();
         ConnectivityManagerApi connectivityManager = ConnectivityManager.getInstance(getApplicationContext());
-        if (hostname == null || presenter == null) {
-            String previousHostname = hostname;
-            hostname = RocketChatCache.INSTANCE.getSelectedServerHostname();
-            if (hostname == null) {
-                showAddServerScreen();
-            } else {
-                onHostnameUpdated();
-                if (!hostname.equalsIgnoreCase(previousHostname)) {
-                    connectivityManager.resetConnectivityStateList();
-                    connectivityManager.keepAliveServer();
+
+        if (!CertificateHelper.Companion.hasCertificate(this) || !CertificateHelper.Companion.areCertificateAndPasswordValid()) {
+            showDownloadCertificateScreen();
+        }
+        else {
+            if (hostname == null || presenter == null) {
+                String previousHostname = hostname;
+                hostname = RocketChatCache.INSTANCE.getSelectedServerHostname();
+                if (hostname == null) {
+                    showAddServerScreen();
+                } else {
+                    onHostnameUpdated();
+                    if (!hostname.equalsIgnoreCase(previousHostname)) {
+                        connectivityManager.resetConnectivityStateList();
+                        connectivityManager.keepAliveServer();
+                    }
                 }
+            } else {
+                connectivityManager.keepAliveServer();
+                presenter.bindView(this);
+                presenter.loadSignedInServers(hostname);
+                roomId = RocketChatCache.INSTANCE.getSelectedRoomId();
             }
-        } else {
-            connectivityManager.keepAliveServer();
-            presenter.bindView(this);
-            presenter.loadSignedInServers(hostname);
-            roomId = RocketChatCache.INSTANCE.getSelectedRoomId();
         }
     }
 
@@ -247,6 +255,12 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
     @Override
     public void showAddServerScreen() {
         LaunchUtil.showAddServerActivity(this);
+    }
+
+    @Override
+    public void showDownloadCertificateScreen() {
+        LaunchUtil.showDownloadCertificateActivity(this);
+        showConnectionOk();
     }
 
     @Override
