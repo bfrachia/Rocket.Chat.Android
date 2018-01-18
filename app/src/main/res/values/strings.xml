@@ -69,6 +69,7 @@
     <string name="audio_upload_message_spec_title">Attach audio</string>
     <string name="video_upload_message_spec_title">Attach video</string>
 
+    <string name="input_download_certificate_url_invalid_url_message">Invalid url</string>
     <string name="input_hostname_invalid_server_message">Invalid server version</string>
     <string name="make_sure_your_server_version_is_up_to_date">Make sure your Rocket.Chat server version is up to date</string>
     <string name="connection_error_try_later">There\'s a connection error. Please try later.</string>

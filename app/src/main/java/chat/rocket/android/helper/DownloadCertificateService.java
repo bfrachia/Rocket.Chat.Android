@@ -21,6 +21,7 @@ import java.net.URLConnection;
 public class DownloadCertificateService extends IntentService {
 
     public static final int UPDATE_DOWNLOAD_PROGRESS = 1;
+    public static final int INVALID_URL = 2;
 
     public DownloadCertificateService() {
         super("DownloadCertService");
@@ -58,13 +59,13 @@ public class DownloadCertificateService extends IntentService {
                 output.flush();
                 output.close();
                 input.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
 
-            Bundle resultData = new Bundle();
-            resultData.putInt("progress" ,100);
-            receiver.send(UPDATE_DOWNLOAD_PROGRESS, resultData);
+                Bundle resultData = new Bundle();
+                resultData.putInt("progress" ,100);
+                receiver.send(UPDATE_DOWNLOAD_PROGRESS, resultData);
+            } catch (IOException e) {
+                receiver.send(INVALID_URL, null);
+            }
 
         }
 

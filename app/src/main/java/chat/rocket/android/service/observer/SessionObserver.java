@@ -4,8 +4,10 @@ import android.content.Context;
 
 import java.util.List;
 
+import chat.rocket.android.RocketChatApplication;
 import chat.rocket.android.RocketChatCache;
 import chat.rocket.android.api.RaixPushHelper;
+import chat.rocket.android.helper.CertificateHelper;
 import chat.rocket.android.helper.LogIfError;
 import chat.rocket.android.service.ConnectivityManager;
 import chat.rocket.android.service.internal.StreamRoomMessageManager;
@@ -83,6 +85,12 @@ public class SessionObserver extends AbstractModelObserver<RealmSession> {
   @DebugLog
   private void onLogout() {
     streamNotifyMessage.unregister();
+
+    CertificateHelper.Companion
+            .deleteCertificate(RocketChatApplication.getInstance().getApplicationContext());
+
+    CertificateHelper.Companion
+            .deleteCertificatePassword();
 
     realmHelper.executeTransaction(realm -> {
       // remove all tables. ONLY INTERNAL TABLES!.

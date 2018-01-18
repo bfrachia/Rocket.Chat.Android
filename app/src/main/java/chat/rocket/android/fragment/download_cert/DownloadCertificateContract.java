@@ -11,8 +11,6 @@ public interface DownloadCertificateContract {
 
     void showInvalidUrlError();
 
-    void showConnectionError();
-
     void showAddServerActivity();
 
     void invalidCertAndPassword();

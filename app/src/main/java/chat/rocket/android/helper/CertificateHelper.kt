@@ -33,8 +33,23 @@ class CertificateHelper {
             }
         }
 
-        fun storePassword(password: String) {
+        fun deleteCertificate(context: Context): Boolean {
+            return try {
+                File(context.filesDir.absolutePath + "/clientCert.p12").delete()
+                true
+            }
+            catch (e: FileNotFoundException) {
+                false
+            }
+
+        }
+
+        fun storePassword(password: String?) {
             RocketChatCache.setCertPassword(password)
+        }
+
+        fun deleteCertificatePassword() {
+            storePassword(null)
         }
 
         fun getPassword(): String? {
@@ -47,6 +62,7 @@ class CertificateHelper {
 
             return try {
                 keyStore.load(fis, getPassword()?.toCharArray())
+                fis?.close()
                 true
             }
             catch (e: IOException) {

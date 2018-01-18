@@ -14,7 +14,6 @@ import chat.rocket.android.LaunchUtil;
 import chat.rocket.android.R;
 import chat.rocket.android.fragment.AbstractFragment;
 import chat.rocket.android.helper.TextUtils;
-import chat.rocket.android.service.ConnectivityManager;
 
 /**
  * Input server host.
@@ -32,8 +31,7 @@ public class DownloadCertificateFragment extends AbstractFragment implements Dow
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Context appContext = getContext().getApplicationContext();
-        presenter = new DownloadCertificatePresenter(ConnectivityManager.getInstance(appContext));
+        presenter = new DownloadCertificatePresenter();
     }
 
     @Override
@@ -111,12 +109,7 @@ public class DownloadCertificateFragment extends AbstractFragment implements Dow
 
     @Override
     public void showInvalidUrlError() {
-        showError(getString(R.string.input_hostname_invalid_server_message));
-    }
-
-    @Override
-    public void showConnectionError() {
-        showError(getString(R.string.connection_error_try_later));
+        showError(getString(R.string.input_download_certificate_url_invalid_url_message));
     }
 
     @Override
@@ -127,9 +120,9 @@ public class DownloadCertificateFragment extends AbstractFragment implements Dow
 
     @Override
     public void invalidCertAndPassword() {
-        showError(getString(R.string.connection_error_certificate_password_combination));
         waitingView.setVisibility(View.GONE);
         container.setVisibility(View.VISIBLE);
+        showError(getString(R.string.connection_error_certificate_password_combination));
     }
 
 }
