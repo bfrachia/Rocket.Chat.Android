@@ -152,5 +152,7 @@ dependencies {
     testImplementation "org.jetbrains.kotlin:kotlin-reflect:$rootProject.ext.kotlinVersion"
     testImplementation "com.nhaarman:mockito-kotlin:1.5.0"
     testImplementation 'org.amshove.kluent:kluent:1.14'
+
+    implementation "org.jetbrains.anko:anko:$rootProject.ext.anko_version"
 }
 apply plugin: 'com.google.gms.google-services'

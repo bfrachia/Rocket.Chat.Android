@@ -45,7 +45,7 @@ public class DownloadCertificateFragment extends AbstractFragment implements Dow
 
         container = rootView.findViewById(R.id.container);
         waitingView = rootView.findViewById(R.id.waiting);
-        rootView.findViewById(R.id.btn_download).setOnClickListener(view -> handleCertDownload());
+        rootView.findViewById(R.id.btn_connect).setOnClickListener(view -> handleCertDownload());
     }
 
     private void setupVersionInfo() {

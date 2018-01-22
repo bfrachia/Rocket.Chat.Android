@@ -13,6 +13,7 @@ import chat.rocket.core.models.Message
 import chat.rocket.core.models.User
 import okhttp3.Call
 import okhttp3.Callback
+import okhttp3.OkHttpClient
 import okhttp3.Response
 import org.json.JSONException
 import org.json.JSONObject
@@ -32,35 +33,68 @@ class RoomListPresenter(val context: Context, val view: RoomListContract.View) :
                                        offset: Int) {
         TAG = "pinned"
         view.showWaitingView(true)
-        OkHttpHelper.getClient()
-                .newCall(RestApiHelper.getRequestForPinnedMessages(roomId,
+//        OkHttpHelper.getClient()
+//                .newCall(RestApiHelper.getRequestForPinnedMessages(roomId,
+//                        roomType,
+//                        hostname,
+//                        token,
+//                        userId,
+//                        offset.toString()))
+//                .enqueue(object : Callback {
+//                    override fun onFailure(call: Call, e: IOException) {
+//                        if (!call.isCanceled) {
+//                            val message = e.message
+//                            if (message != null) {
+//                                showErrorMessage(message)
+//                            }
+//                        }
+//                    }
+//
+//                    @Throws(IOException::class)
+//                    override fun onResponse(call: Call, response: Response) {
+//                        if (response.isSuccessful) {
+//                            val result = response.body()?.string()
+//                            if (result != null) {
+//                                handleMessagesJson(result, true, TAG)
+//                            }
+//                        } else {
+//                            showErrorMessage(response.message())
+//                        }
+//                    }
+//                })
+
+        OkHttpHelper.getClient(object: OkHttpHelper.GetHttpClientListener {
+            override fun onHttpClientRetrieved(httpClient: OkHttpClient?) {
+                httpClient?.newCall(RestApiHelper.getRequestForPinnedMessages(roomId,
                         roomType,
                         hostname,
                         token,
                         userId,
-                        offset.toString()))
-                .enqueue(object : Callback {
-                    override fun onFailure(call: Call, e: IOException) {
-                        if (!call.isCanceled) {
-                            val message = e.message
-                            if (message != null) {
-                                showErrorMessage(message)
+                        offset.toString()))?.enqueue(object : Callback {
+                            override fun onFailure(call: Call, e: IOException) {
+                                if (!call.isCanceled) {
+                                    val message = e.message
+                                    if (message != null) {
+                                        showErrorMessage(message)
+                                    }
+                                }
                             }
-                        }
-                    }
 
-                    @Throws(IOException::class)
-                    override fun onResponse(call: Call, response: Response) {
-                        if (response.isSuccessful) {
-                            val result = response.body()?.string()
-                            if (result != null) {
-                                handleMessagesJson(result, true, TAG)
+                            @Throws(IOException::class)
+                            override fun onResponse(call: Call, response: Response) {
+                                if (response.isSuccessful) {
+                                    val result = response.body()?.string()
+                                    if (result != null) {
+                                        handleMessagesJson(result, true, TAG)
+                                    }
+                                } else {
+                                    showErrorMessage(response.message())
+                                }
                             }
-                        } else {
-                            showErrorMessage(response.message())
-                        }
-                    }
                 })
+            }
+        })
+
     }
 
     override fun requestFavoriteMessages(roomId: String,
@@ -71,35 +105,67 @@ class RoomListPresenter(val context: Context, val view: RoomListContract.View) :
                                          offset: Int) {
         TAG = "favorite"
         view.showWaitingView(true)
-        OkHttpHelper.getClient()
-                .newCall(RestApiHelper.getRequestForFavoriteMessages(roomId,
+//        OkHttpHelper.getClient()
+//                .newCall(RestApiHelper.getRequestForFavoriteMessages(roomId,
+//                        roomType,
+//                        hostname,
+//                        token,
+//                        userId,
+//                        offset.toString()))
+//                .enqueue(object : Callback {
+//                    override fun onFailure(call: Call, e: IOException) {
+//                        if (!call.isCanceled) {
+//                            val message = e.message
+//                            if (message != null) {
+//                                showErrorMessage(message)
+//                            }
+//                        }
+//                    }
+//
+//                    @Throws(IOException::class)
+//                    override fun onResponse(call: Call, response: Response) {
+//                        if (response.isSuccessful) {
+//                            val result = response.body()?.string()
+//                            if (result != null) {
+//                                handleMessagesJson(result, false, TAG)
+//                            }
+//                        } else {
+//                            showErrorMessage(response.message())
+//                        }
+//                    }
+//                })
+
+        OkHttpHelper.getClient(object: OkHttpHelper.GetHttpClientListener {
+            override fun onHttpClientRetrieved(httpClient: OkHttpClient?) {
+                httpClient?.newCall(RestApiHelper.getRequestForFavoriteMessages(roomId,
                         roomType,
                         hostname,
                         token,
                         userId,
-                        offset.toString()))
-                .enqueue(object : Callback {
-                    override fun onFailure(call: Call, e: IOException) {
-                        if (!call.isCanceled) {
-                            val message = e.message
-                            if (message != null) {
-                                showErrorMessage(message)
+                        offset.toString()))?.enqueue(object : Callback {
+                            override fun onFailure(call: Call, e: IOException) {
+                                if (!call.isCanceled) {
+                                    val message = e.message
+                                    if (message != null) {
+                                        showErrorMessage(message)
+                                    }
+                                }
                             }
-                        }
-                    }
 
-                    @Throws(IOException::class)
-                    override fun onResponse(call: Call, response: Response) {
-                        if (response.isSuccessful) {
-                            val result = response.body()?.string()
-                            if (result != null) {
-                                handleMessagesJson(result, false, TAG)
+                            @Throws(IOException::class)
+                            override fun onResponse(call: Call, response: Response) {
+                                if (response.isSuccessful) {
+                                    val result = response.body()?.string()
+                                    if (result != null) {
+                                        handleMessagesJson(result, false, TAG)
+                                    }
+                                } else {
+                                    showErrorMessage(response.message())
+                                }
                             }
-                        } else {
-                            showErrorMessage(response.message())
-                        }
-                    }
-                })
+                        })
+            }
+        })
     }
 
     override fun requestFileList(roomId: String,
@@ -109,35 +175,68 @@ class RoomListPresenter(val context: Context, val view: RoomListContract.View) :
                                  userId: String,
                                  offset: Int) {
         view.showWaitingView(true)
-        OkHttpHelper.getClient()
-                .newCall(RestApiHelper.getRequestForFileList(roomId,
+//        OkHttpHelper.getClient()
+//                .newCall(RestApiHelper.getRequestForFileList(roomId,
+//                        roomType,
+//                        hostname,
+//                        token,
+//                        userId,
+//                        offset.toString()))
+//                .enqueue(object : Callback {
+//                    override fun onFailure(call: Call, e: IOException) {
+//                        if (!call.isCanceled) {
+//                            val message = e.message
+//                            if (message != null) {
+//                                showErrorMessage(message)
+//                            }
+//                        }
+//                    }
+//
+//                    @Throws(IOException::class)
+//                    override fun onResponse(call: Call, response: Response) {
+//                        if (response.isSuccessful) {
+//                            val result = response.body()?.string()
+//                            if (result != null) {
+//                                handleFilesJson(result, hostname)
+//                            }
+//                        } else {
+//                            showErrorMessage(response.message())
+//                        }
+//                    }
+//                })
+
+        OkHttpHelper.getClient(object: OkHttpHelper.GetHttpClientListener {
+            override fun onHttpClientRetrieved(httpClient: OkHttpClient?) {
+                httpClient?.newCall(RestApiHelper.getRequestForFileList(roomId,
                         roomType,
                         hostname,
                         token,
                         userId,
-                        offset.toString()))
-                .enqueue(object : Callback {
-                    override fun onFailure(call: Call, e: IOException) {
-                        if (!call.isCanceled) {
-                            val message = e.message
-                            if (message != null) {
-                                showErrorMessage(message)
+                        offset.toString()))?.enqueue(object : Callback {
+                            override fun onFailure(call: Call, e: IOException) {
+                                if (!call.isCanceled) {
+                                    val message = e.message
+                                    if (message != null) {
+                                        showErrorMessage(message)
+                                    }
+                                }
                             }
-                        }
-                    }
 
-                    @Throws(IOException::class)
-                    override fun onResponse(call: Call, response: Response) {
-                        if (response.isSuccessful) {
-                            val result = response.body()?.string()
-                            if (result != null) {
-                                handleFilesJson(result, hostname)
+                            @Throws(IOException::class)
+                            override fun onResponse(call: Call, response: Response) {
+                                if (response.isSuccessful) {
+                                    val result = response.body()?.string()
+                                    if (result != null) {
+                                        handleFilesJson(result, hostname)
+                                    }
+                                } else {
+                                    showErrorMessage(response.message())
+                                }
                             }
-                        } else {
-                            showErrorMessage(response.message())
-                        }
-                    }
-                })
+                        })
+            }
+        })
+
     }
 
     override fun requestMemberList(roomId: String,
@@ -147,39 +246,77 @@ class RoomListPresenter(val context: Context, val view: RoomListContract.View) :
                                    userId: String,
                                    offset: Int) {
         view.showWaitingView(true)
-        OkHttpHelper.getClient()
-                .newCall(RestApiHelper.getRequestForMemberList(roomId,
+//        OkHttpHelper.getClient()
+//                .newCall(RestApiHelper.getRequestForMemberList(roomId,
+//                        roomType,
+//                        hostname,
+//                        token,
+//                        userId,
+//                        offset.toString()))
+//                .enqueue(object : Callback {
+//                    override fun onFailure(call: Call, e: IOException) {
+//                        if (!call.isCanceled) {
+//                            val message = e.message
+//                            if (message != null) {
+//                                showErrorMessage(message)
+//                            }
+//                        }
+//                    }
+//
+//                    @Throws(IOException::class)
+//                    override fun onResponse(call: Call, response: Response) {
+//                        if (response.isSuccessful) {
+//                            val result = response.body()?.string()
+//                            if (result != null) {
+//                                handleMembersJson(result)
+//                            }
+//                        } else {
+//                            showErrorMessage(response.message())
+//                        }
+//                    }
+//                })
+
+        OkHttpHelper.getClient(object: OkHttpHelper.GetHttpClientListener {
+            override fun onHttpClientRetrieved(httpClient: OkHttpClient?) {
+                httpClient?.newCall(RestApiHelper.getRequestForMemberList(roomId,
                         roomType,
                         hostname,
                         token,
                         userId,
-                        offset.toString()))
-                .enqueue(object : Callback {
-                    override fun onFailure(call: Call, e: IOException) {
-                        if (!call.isCanceled) {
-                            val message = e.message
-                            if (message != null) {
-                                showErrorMessage(message)
+                        offset.toString()))?.enqueue(object : Callback {
+                            override fun onFailure(call: Call, e: IOException) {
+                                if (!call.isCanceled) {
+                                    val message = e.message
+                                    if (message != null) {
+                                        showErrorMessage(message)
+                                    }
+                                }
                             }
-                        }
-                    }
 
-                    @Throws(IOException::class)
-                    override fun onResponse(call: Call, response: Response) {
-                        if (response.isSuccessful) {
-                            val result = response.body()?.string()
-                            if (result != null) {
-                                handleMembersJson(result)
+                            @Throws(IOException::class)
+                            override fun onResponse(call: Call, response: Response) {
+                                if (response.isSuccessful) {
+                                    val result = response.body()?.string()
+                                    if (result != null) {
+                                        handleMembersJson(result)
+                                    }
+                                } else {
+                                    showErrorMessage(response.message())
+                                }
                             }
-                        } else {
-                            showErrorMessage(response.message())
-                        }
-                    }
-                })
+                        })
+            }
+        })
     }
 
     override fun cancelRequest() {
-        OkHttpHelper.getClient().dispatcher().cancelAll()
+//        OkHttpHelper.getClient().dispatcher().cancelAll()
+
+        OkHttpHelper.getClient(object: OkHttpHelper.GetHttpClientListener {
+            override fun onHttpClientRetrieved(httpClient: OkHttpClient?) {
+                httpClient?.dispatcher()?.cancelAll()
+            }
+        })
     }
 
     private fun handleMessagesJson(json: String, isPinnedMessage: Boolean, TAG: String) {

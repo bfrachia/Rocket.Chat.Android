@@ -47,7 +47,7 @@ public class InputHostnameFragment extends AbstractFragment implements InputHost
 
         container = rootView.findViewById(R.id.container);
         waitingView = rootView.findViewById(R.id.waiting);
-        rootView.findViewById(R.id.btn_download).setOnClickListener(view -> handleConnect());
+        rootView.findViewById(R.id.btn_connect).setOnClickListener(view -> handleConnect());
     }
 
     private void setupVersionInfo() {

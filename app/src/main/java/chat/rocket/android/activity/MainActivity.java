@@ -3,6 +3,8 @@ package chat.rocket.android.activity;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.security.KeyChain;
+import android.security.KeyChainAliasCallback;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.graphics.drawable.AnimatedVectorDrawableCompat;
@@ -23,6 +25,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import chat.rocket.android.ConnectionStatusManager;
 import chat.rocket.android.LaunchUtil;
 import chat.rocket.android.R;
+import chat.rocket.android.RocketChatApplication;
 import chat.rocket.android.RocketChatCache;
 import chat.rocket.android.api.MethodCallHelper;
 import chat.rocket.android.fragment.chatroom.HomeFragment;
@@ -31,11 +34,14 @@ import chat.rocket.android.fragment.download_cert.DownloadCertificateFragment;
 import chat.rocket.android.fragment.sidebar.SidebarMainFragment;
 import chat.rocket.android.helper.CertificateHelper;
 import chat.rocket.android.helper.KeyboardHelper;
+import chat.rocket.android.helper.OkHttpHelper;
 import chat.rocket.android.service.ConnectivityManager;
 import chat.rocket.android.service.ConnectivityManagerApi;
+import chat.rocket.android.widget.RocketChatWidgets;
 import chat.rocket.android.widget.RoomToolbar;
 import chat.rocket.android.widget.helper.DebouncingOnClickListener;
 import chat.rocket.android.widget.helper.FrescoHelper;
+import chat.rocket.android_ddp.DDPClient;
 import chat.rocket.core.interactors.CanCreateRoomInteractor;
 import chat.rocket.core.interactors.RoomInteractor;
 import chat.rocket.core.interactors.SessionInteractor;
@@ -48,11 +54,12 @@ import chat.rocket.persistence.realm.repositories.RealmUserRepository;
 import de.keyboardsurfer.android.widget.crouton.Configuration;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import hugo.weaving.DebugLog;
+import okhttp3.OkHttpClient;
 
 /**
  * Entry-point for Rocket.Chat.Android application.
  */
-public class MainActivity extends AbstractAuthedActivity implements MainContract.View {
+public class MainActivity extends AbstractAuthedActivity implements MainContract.View, KeyChainAliasCallback {
     private RoomToolbar toolbar;
     private SlidingPaneLayout pane;
     private MainContract.Presenter presenter;
@@ -75,6 +82,7 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
         pane = findViewById(R.id.sliding_pane);
         loadCroutonViewIfNeeded();
         setupToolbar();
+
     }
 
     @Override
@@ -82,10 +90,52 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
         super.onResume();
         ConnectivityManagerApi connectivityManager = ConnectivityManager.getInstance(getApplicationContext());
 
-        if (!CertificateHelper.Companion.hasCertificate(this) || !CertificateHelper.Companion.areCertificateAndPasswordValid()) {
-            showDownloadCertificateScreen();
+//        if (!CertificateHelper.Companion.hasCertificate(this) || !CertificateHelper.Companion.areCertificateAndPasswordValid()) {
+//            showDownloadCertificateScreen();
+//        }
+//        else {
+//            if (hostname == null || presenter == null) {
+//                String previousHostname = hostname;
+//                hostname = RocketChatCache.INSTANCE.getSelectedServerHostname();
+//                if (hostname == null) {
+//                    showAddServerScreen();
+//                } else {
+//                    onHostnameUpdated();
+//                    if (!hostname.equalsIgnoreCase(previousHostname)) {
+//                        connectivityManager.resetConnectivityStateList();
+//                        connectivityManager.keepAliveServer();
+//                    }
+//                }
+//            } else {
+//                connectivityManager.keepAliveServer();
+//                presenter.bindView(this);
+//                presenter.loadSignedInServers(hostname);
+//                roomId = RocketChatCache.INSTANCE.getSelectedRoomId();
+//            }
+//        }
+
+        if (RocketChatCache.INSTANCE.getCertAlias() == null) {
+            KeyChain.choosePrivateKeyAlias(this, this, // Callback
+                    new String[]{"RSA", "DSA"}, // Any key types.
+                    null, // Any issuers.
+                    null, // Any host
+                    -1, // Any port
+                    "1");
         }
         else {
+            OkHttpHelper.INSTANCE.getClientForWebSocket(new OkHttpHelper.GetHttpClientListener() {
+                @Override
+                public void onHttpClientRetrieved(@org.jetbrains.annotations.Nullable OkHttpClient httpClient) {
+                    DDPClient.initialize(httpClient);
+                }
+            });
+
+            OkHttpHelper.INSTANCE.getClientForDownloadFile(new OkHttpHelper.GetHttpClientListener() {
+                @Override
+                public void onHttpClientRetrieved(@org.jetbrains.annotations.Nullable OkHttpClient httpClient) {
+                    RocketChatWidgets.initialize(MainActivity.this, httpClient);
+                }
+            });
             if (hostname == null || presenter == null) {
                 String previousHostname = hostname;
                 hostname = RocketChatCache.INSTANCE.getSelectedServerHostname();
@@ -423,5 +473,24 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
         } else {
             onHostnameUpdated();
         }
+    }
+
+    @Override
+    public void alias(@Nullable String alias) {
+
+        RocketChatCache.INSTANCE.setCertAlias(alias);
+        OkHttpHelper.INSTANCE.getClientForWebSocket(new OkHttpHelper.GetHttpClientListener() {
+            @Override
+            public void onHttpClientRetrieved(@org.jetbrains.annotations.Nullable OkHttpClient httpClient) {
+                DDPClient.initialize(httpClient);
+            }
+        });
+
+        OkHttpHelper.INSTANCE.getClientForDownloadFile(new OkHttpHelper.GetHttpClientListener() {
+            @Override
+            public void onHttpClientRetrieved(@org.jetbrains.annotations.Nullable OkHttpClient httpClient) {
+                RocketChatWidgets.initialize(MainActivity.this, httpClient);
+            }
+        });
     }
 }

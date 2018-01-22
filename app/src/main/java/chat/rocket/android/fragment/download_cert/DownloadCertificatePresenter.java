@@ -6,6 +6,8 @@ import android.os.Handler;
 import android.os.ResultReceiver;
 import android.webkit.URLUtil;
 
+import org.jetbrains.annotations.Nullable;
+
 import chat.rocket.android.RocketChatApplication;
 import chat.rocket.android.RocketChatCache;
 import chat.rocket.android.helper.CertificateHelper;
@@ -14,6 +16,7 @@ import chat.rocket.android.helper.OkHttpHelper;
 import chat.rocket.android.shared.BasePresenter;
 import chat.rocket.android.widget.RocketChatWidgets;
 import chat.rocket.android_ddp.DDPClient;
+import okhttp3.OkHttpClient;
 
 public class DownloadCertificatePresenter extends BasePresenter<DownloadCertificateContract.View> implements DownloadCertificateContract.Presenter {
 
@@ -58,8 +61,24 @@ public class DownloadCertificatePresenter extends BasePresenter<DownloadCertific
 
             if (CertificateHelper.Companion.areCertificateAndPasswordValid()) {
               OkHttpHelper.INSTANCE.resetClients();
-              DDPClient.initialize(OkHttpHelper.INSTANCE.getClientForWebSocket());
-              RocketChatWidgets.initialize(RocketChatApplication.getInstance().getApplicationContext(), OkHttpHelper.INSTANCE.getClientForDownloadFile());
+
+              OkHttpHelper.INSTANCE.getClientForWebSocket(new OkHttpHelper.GetHttpClientListener() {
+                @Override
+                public void onHttpClientRetrieved(@Nullable OkHttpClient httpClient) {
+                  DDPClient.initialize(httpClient);
+                }
+              });
+
+//              DDPClient.initialize(OkHttpHelper.INSTANCE.getClientForWebSocket());
+
+              OkHttpHelper.INSTANCE.getClientForDownloadFile(new OkHttpHelper.GetHttpClientListener() {
+                @Override
+                public void onHttpClientRetrieved(@Nullable OkHttpClient httpClient) {
+                  RocketChatWidgets.initialize(RocketChatApplication.getInstance().getApplicationContext(), httpClient);
+                }
+              });
+
+//              RocketChatWidgets.initialize(RocketChatApplication.getInstance().getApplicationContext(), OkHttpHelper.INSTANCE.getClientForDownloadFile());
               view.showAddServerActivity();
             }
             else {

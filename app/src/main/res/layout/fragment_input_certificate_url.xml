@@ -59,13 +59,13 @@
         android:hint="@string/fragment_input_certificate_url_password_hint"
         android:ems="10"
         android:inputType="textPassword"
-        app:layout_constraintBottom_toTopOf="@+id/btn_download"
+        app:layout_constraintBottom_toTopOf="@+id/btn_connect"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editor_download_url" />
 
     <Button
-        android:id="@+id/btn_download"
+        android:id="@+id/btn_connect"
         style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
