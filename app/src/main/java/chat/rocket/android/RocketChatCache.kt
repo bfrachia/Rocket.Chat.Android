@@ -444,9 +444,7 @@ object RocketChatCache {
     fun getCertPassword(): String? = getString(KEY_CERT_PWD, null)
 
     fun setCertAlias(alias: String?) {
-        alias?.let {
-            setString(KEY_CERT_ALIAS, alias)
-        }
+        setString(KEY_CERT_ALIAS, alias)
     }
 
     fun getCertAlias(): String? = getString(KEY_CERT_ALIAS, null)

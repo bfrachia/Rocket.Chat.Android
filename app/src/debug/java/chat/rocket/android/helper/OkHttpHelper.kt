@@ -32,18 +32,6 @@ object OkHttpHelper {
 
     @Throws(IOException::class)
     private fun generateSSLContext(context: Context, listener: GenerateSSLContextListener) {
-//        val password = CertificateHelper.getPassword()
-//        if (password != null) {
-//            val keyStore = KeyStore.getInstance("PKCS12")
-//            val fis = getCertFile(context)
-//
-//            try {
-//                keyStore.load(fis, password.toCharArray())
-//            }
-//            catch (e: IOException) {
-//                throw e
-//            }
-
             val alias = RocketChatCache.getCertAlias()
 
             if (alias != null) {
@@ -62,7 +50,7 @@ object OkHttpHelper {
 
                         val keyManager = object : X509ExtendedKeyManager() {
 
-                            override fun chooseClientAlias(strings: Array<String>, principals: Array<Principal>, socket: Socket): String {
+                            override fun chooseClientAlias(strings: Array<String>, principals: Array<Principal>?, socket: Socket): String {
                                 return alias
                             }
 
@@ -92,9 +80,6 @@ object OkHttpHelper {
 
                         trustFactory.init(trustStore)
 
-                        val trustManagers = trustFactory.trustManagers
-
-
                         val tm = arrayOf<X509TrustManager>(object : X509TrustManager {
                             @Throws(CertificateException::class)
                             override fun checkClientTrusted(chain: Array<X509Certificate>, authType: String) {
@@ -103,10 +88,6 @@ object OkHttpHelper {
                             @Throws(CertificateException::class)
                             override fun checkServerTrusted(chain: Array<X509Certificate>, authType: String) {
                             }
-
-                            //            public X509Certificate[] getAcceptedIssuers() {
-                            //                return certificates;
-                            //            }
 
                             override fun getAcceptedIssuers(): Array<X509Certificate> {
                                 return certificates
@@ -135,17 +116,7 @@ object OkHttpHelper {
                     }
                 }
             }
-//            listener.onSSLContextGenerated(null)
-
             else throw IOException()
-//            val sslContext = SSLContext.getInstance("TLS")
-//            val keyManagerFactory = KeyManagerFactory.getInstance("X509")
-//            keyManagerFactory.init(keyStore, password.toCharArray())
-//            sslContext.init(keyManagerFactory.keyManagers, nu ll, null)
-//            return sslContext
-//        }
-//        else throw IOException()
-
     }
 
     @Throws(IOException::class)
@@ -170,7 +141,6 @@ object OkHttpHelper {
         else {
             listener.onHttpClientRetrieved(httpClient)
         }
-//        return httpClient ?: throw AssertionError("httpClient set to null by another thread")
     }
 
     fun getClientForUploadFile(listener: GetHttpClientListener) {
@@ -193,7 +163,6 @@ object OkHttpHelper {
         else {
             listener.onHttpClientRetrieved(httpClientForUploadFile)
         }
-//        return httpClientForUploadFile ?: throw AssertionError("httpClientForUploadFile set to null by another thread")
     }
 
     fun getClientForDownloadFile(listener: GetHttpClientListener) {
@@ -230,7 +199,6 @@ object OkHttpHelper {
         else {
             listener.onHttpClientRetrieved(httpClientForDownloadFile)
         }
-//        return httpClientForDownloadFile ?: throw  AssertionError("httpClientForDownloadFile set to null by another thread")
     }
 
     /**
@@ -263,7 +231,6 @@ object OkHttpHelper {
         else {
             listener.onHttpClientRetrieved(httpClientForWS)
         }
-//        return httpClientForWS ?: throw AssertionError("httpClientForWS set to null by another thread")
     }
 
     fun resetClients() {

@@ -137,6 +137,7 @@ public class MainPresenter extends BasePresenter<MainContract.View>
     @Override
     public void prepareToLogout() {
         clearSubscriptions();
+        RocketChatCache.INSTANCE.setCertAlias(null);
     }
 
     private Pair<String, String> getLogoAndSiteNamePair(Pair<Optional<PublicSetting>, Optional<PublicSetting>> settingsPair) {

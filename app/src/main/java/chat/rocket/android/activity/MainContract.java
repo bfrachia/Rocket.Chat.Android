@@ -17,8 +17,6 @@ public interface MainContract {
 
     void showAddServerScreen();
 
-    void showDownloadCertificateScreen();
-
     void showLoginScreen();
 
     void showConnectionError();

@@ -11,6 +11,7 @@ import android.support.graphics.drawable.AnimatedVectorDrawableCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SlidingPaneLayout;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -25,14 +26,11 @@ import java.util.concurrent.atomic.AtomicReference;
 import chat.rocket.android.ConnectionStatusManager;
 import chat.rocket.android.LaunchUtil;
 import chat.rocket.android.R;
-import chat.rocket.android.RocketChatApplication;
 import chat.rocket.android.RocketChatCache;
 import chat.rocket.android.api.MethodCallHelper;
 import chat.rocket.android.fragment.chatroom.HomeFragment;
 import chat.rocket.android.fragment.chatroom.RoomFragment;
-import chat.rocket.android.fragment.download_cert.DownloadCertificateFragment;
 import chat.rocket.android.fragment.sidebar.SidebarMainFragment;
-import chat.rocket.android.helper.CertificateHelper;
 import chat.rocket.android.helper.KeyboardHelper;
 import chat.rocket.android.helper.OkHttpHelper;
 import chat.rocket.android.service.ConnectivityManager;
@@ -90,52 +88,20 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
         super.onResume();
         ConnectivityManagerApi connectivityManager = ConnectivityManager.getInstance(getApplicationContext());
 
-//        if (!CertificateHelper.Companion.hasCertificate(this) || !CertificateHelper.Companion.areCertificateAndPasswordValid()) {
-//            showDownloadCertificateScreen();
-//        }
-//        else {
-//            if (hostname == null || presenter == null) {
-//                String previousHostname = hostname;
-//                hostname = RocketChatCache.INSTANCE.getSelectedServerHostname();
-//                if (hostname == null) {
-//                    showAddServerScreen();
-//                } else {
-//                    onHostnameUpdated();
-//                    if (!hostname.equalsIgnoreCase(previousHostname)) {
-//                        connectivityManager.resetConnectivityStateList();
-//                        connectivityManager.keepAliveServer();
-//                    }
-//                }
-//            } else {
-//                connectivityManager.keepAliveServer();
-//                presenter.bindView(this);
-//                presenter.loadSignedInServers(hostname);
-//                roomId = RocketChatCache.INSTANCE.getSelectedRoomId();
-//            }
-//        }
+        String alias = RocketChatCache.INSTANCE.getCertAlias();
 
-        if (RocketChatCache.INSTANCE.getCertAlias() == null) {
+        if (alias == null) {
             KeyChain.choosePrivateKeyAlias(this, this, // Callback
                     new String[]{"RSA", "DSA"}, // Any key types.
                     null, // Any issuers.
                     null, // Any host
                     -1, // Any port
-                    "1");
+                    "RocketChat");
         }
         else {
-            OkHttpHelper.INSTANCE.getClientForWebSocket(new OkHttpHelper.GetHttpClientListener() {
-                @Override
-                public void onHttpClientRetrieved(@org.jetbrains.annotations.Nullable OkHttpClient httpClient) {
-                    DDPClient.initialize(httpClient);
-                }
-            });
+            OkHttpHelper.INSTANCE.getClientForWebSocket(DDPClient::initialize);
 
-            OkHttpHelper.INSTANCE.getClientForDownloadFile(new OkHttpHelper.GetHttpClientListener() {
-                @Override
-                public void onHttpClientRetrieved(@org.jetbrains.annotations.Nullable OkHttpClient httpClient) {
-                    RocketChatWidgets.initialize(MainActivity.this, httpClient);
-                }
-            });
+            OkHttpHelper.INSTANCE.getClientForDownloadFile(httpClient -> RocketChatWidgets.initialize(MainActivity.this, httpClient));
             if (hostname == null || presenter == null) {
                 String previousHostname = hostname;
                 hostname = RocketChatCache.INSTANCE.getSelectedServerHostname();
@@ -308,12 +274,6 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
     }
 
     @Override
-    public void showDownloadCertificateScreen() {
-        LaunchUtil.showDownloadCertificateActivity(this);
-        showConnectionOk();
-    }
-
-    @Override
     public void showLoginScreen() {
         LaunchUtil.showLoginActivity(this, hostname);
         showConnectionOk();
@@ -477,20 +437,11 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
 
     @Override
     public void alias(@Nullable String alias) {
+        if (alias != null) {
+            RocketChatCache.INSTANCE.setCertAlias(alias);
+            OkHttpHelper.INSTANCE.getClientForWebSocket(DDPClient::initialize);
 
-        RocketChatCache.INSTANCE.setCertAlias(alias);
-        OkHttpHelper.INSTANCE.getClientForWebSocket(new OkHttpHelper.GetHttpClientListener() {
-            @Override
-            public void onHttpClientRetrieved(@org.jetbrains.annotations.Nullable OkHttpClient httpClient) {
-                DDPClient.initialize(httpClient);
-            }
-        });
-
-        OkHttpHelper.INSTANCE.getClientForDownloadFile(new OkHttpHelper.GetHttpClientListener() {
-            @Override
-            public void onHttpClientRetrieved(@org.jetbrains.annotations.Nullable OkHttpClient httpClient) {
-                RocketChatWidgets.initialize(MainActivity.this, httpClient);
-            }
-        });
+            OkHttpHelper.INSTANCE.getClientForDownloadFile(httpClient -> RocketChatWidgets.initialize(MainActivity.this, httpClient));
+        }
     }
 }
