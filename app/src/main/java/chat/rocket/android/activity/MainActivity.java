@@ -3,15 +3,12 @@ package chat.rocket.android.activity;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.security.KeyChain;
-import android.security.KeyChainAliasCallback;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.graphics.drawable.AnimatedVectorDrawableCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SlidingPaneLayout;
-import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -52,12 +49,11 @@ import chat.rocket.persistence.realm.repositories.RealmUserRepository;
 import de.keyboardsurfer.android.widget.crouton.Configuration;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import hugo.weaving.DebugLog;
-import okhttp3.OkHttpClient;
 
 /**
  * Entry-point for Rocket.Chat.Android application.
  */
-public class MainActivity extends AbstractAuthedActivity implements MainContract.View, KeyChainAliasCallback {
+public class MainActivity extends AbstractAuthedActivity implements MainContract.View {
     private RoomToolbar toolbar;
     private SlidingPaneLayout pane;
     private MainContract.Presenter presenter;
@@ -90,15 +86,7 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
 
         String alias = RocketChatCache.INSTANCE.getCertAlias();
 
-        if (alias == null) {
-            KeyChain.choosePrivateKeyAlias(this, this, // Callback
-                    new String[]{"RSA", "DSA"}, // Any key types.
-                    null, // Any issuers.
-                    null, // Any host
-                    -1, // Any port
-                    "RocketChat");
-        }
-        else {
+        if (alias != null) {
             OkHttpHelper.INSTANCE.getClientForWebSocket(DDPClient::initialize);
 
             OkHttpHelper.INSTANCE.getClientForDownloadFile(httpClient -> RocketChatWidgets.initialize(MainActivity.this, httpClient));
@@ -432,16 +420,6 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
             LaunchUtil.showMainActivity(this);
         } else {
             onHostnameUpdated();
-        }
-    }
-
-    @Override
-    public void alias(@Nullable String alias) {
-        if (alias != null) {
-            RocketChatCache.INSTANCE.setCertAlias(alias);
-            OkHttpHelper.INSTANCE.getClientForWebSocket(DDPClient::initialize);
-
-            OkHttpHelper.INSTANCE.getClientForDownloadFile(httpClient -> RocketChatWidgets.initialize(MainActivity.this, httpClient));
         }
     }
 }
