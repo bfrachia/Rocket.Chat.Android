@@ -27,15 +27,16 @@ import chat.rocket.android.RocketChatCache;
 import chat.rocket.android.api.MethodCallHelper;
 import chat.rocket.android.fragment.chatroom.HomeFragment;
 import chat.rocket.android.fragment.chatroom.RoomFragment;
-import chat.rocket.android.fragment.download_cert.DownloadCertificateFragment;
 import chat.rocket.android.fragment.sidebar.SidebarMainFragment;
-import chat.rocket.android.helper.CertificateHelper;
 import chat.rocket.android.helper.KeyboardHelper;
+import chat.rocket.android.helper.OkHttpHelper;
 import chat.rocket.android.service.ConnectivityManager;
 import chat.rocket.android.service.ConnectivityManagerApi;
+import chat.rocket.android.widget.RocketChatWidgets;
 import chat.rocket.android.widget.RoomToolbar;
 import chat.rocket.android.widget.helper.DebouncingOnClickListener;
 import chat.rocket.android.widget.helper.FrescoHelper;
+import chat.rocket.android_ddp.DDPClient;
 import chat.rocket.core.interactors.CanCreateRoomInteractor;
 import chat.rocket.core.interactors.RoomInteractor;
 import chat.rocket.core.interactors.SessionInteractor;
@@ -75,6 +76,7 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
         pane = findViewById(R.id.sliding_pane);
         loadCroutonViewIfNeeded();
         setupToolbar();
+
     }
 
     @Override
@@ -82,10 +84,12 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
         super.onResume();
         ConnectivityManagerApi connectivityManager = ConnectivityManager.getInstance(getApplicationContext());
 
-        if (!CertificateHelper.Companion.hasCertificate(this) || !CertificateHelper.Companion.areCertificateAndPasswordValid()) {
-            showDownloadCertificateScreen();
-        }
-        else {
+        String alias = RocketChatCache.INSTANCE.getCertAlias();
+
+        if (alias != null) {
+            OkHttpHelper.INSTANCE.getClientForWebSocket(DDPClient::initialize);
+
+            OkHttpHelper.INSTANCE.getClientForDownloadFile(httpClient -> RocketChatWidgets.initialize(MainActivity.this, httpClient));
             if (hostname == null || presenter == null) {
                 String previousHostname = hostname;
                 hostname = RocketChatCache.INSTANCE.getSelectedServerHostname();
@@ -255,12 +259,6 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
     @Override
     public void showAddServerScreen() {
         LaunchUtil.showAddServerActivity(this);
-    }
-
-    @Override
-    public void showDownloadCertificateScreen() {
-        LaunchUtil.showDownloadCertificateActivity(this);
-        showConnectionOk();
     }
 
     @Override
