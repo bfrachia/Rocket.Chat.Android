@@ -75,7 +75,8 @@ object PushManager {
         val count = data["count"] as String?
         val title = data["title"] as String?
 
-        if (ejson == null || message == null || title == null) {
+//        if (ejson == null || message == null || title == null) {
+        if (message == null || title == null) {
             return
         }
 
@@ -153,7 +154,7 @@ object PushManager {
         groupTuple.second.incrementAndGet()
         val notIdListForHostname: MutableList<PushMessage>? = hostToPushMessageList.get(host)
         if (notIdListForHostname == null) {
-            hostToPushMessageList.put(host, arrayListOf(lastPushMessage))
+            hostToPushMessageList[host] = arrayListOf(lastPushMessage)
         } else {
             notIdListForHostname.add(0, lastPushMessage)
         }
@@ -565,7 +566,7 @@ object PushManager {
 
         init {
             val json = if (ejson == null) JSONObject() else JSONObject(ejson)
-            host = json.optString("host", null)
+            host = json.optString("host", RocketChatCache.getSelectedServerHostname())
             rid = json.optString("rid", null)
             type = json.optString("type", null)
             channelName = json.optString("name", null)

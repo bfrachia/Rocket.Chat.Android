@@ -3,7 +3,6 @@ package chat.rocket.android.fragment.add_server;
 import org.jetbrains.annotations.Nullable;
 
 import chat.rocket.android.BackgroundLooper;
-import chat.rocket.android.RocketChatApplication;
 import chat.rocket.android.RocketChatCache;
 import chat.rocket.android.api.rest.DefaultServerPolicyApi;
 import chat.rocket.android.api.rest.ServerPolicyApi;
@@ -13,7 +12,6 @@ import chat.rocket.android.helper.ServerPolicyApiValidationHelper;
 import chat.rocket.android.helper.ServerPolicyHelper;
 import chat.rocket.android.service.ConnectivityManagerApi;
 import chat.rocket.android.shared.BasePresenter;
-import chat.rocket.android.widget.RocketChatWidgets;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import okhttp3.OkHttpClient;

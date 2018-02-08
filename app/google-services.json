@@ -1,27 +1,27 @@
 {
   "project_info": {
-    "project_number": "1020987621558",
-    "firebase_url": "https://rocketchatnative.firebaseio.com",
-    "project_id": "rocketchatnative",
-    "storage_bucket": "rocketchatnative.appspot.com"
+    "project_number": "306559802136",
+    "firebase_url": "https://rocketchat-f3409.firebaseio.com",
+    "project_id": "rocketchat-f3409",
+    "storage_bucket": "rocketchat-f3409.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1020987621558:android:16da2e50aff9f0c9",
+        "mobilesdk_app_id": "1:306559802136:android:16da2e50aff9f0c9",
         "android_client_info": {
           "package_name": "chat.rocket.android"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1020987621558-trk61fjrahho0ujtjap095p1jmi48pfq.apps.googleusercontent.com",
+          "client_id": "306559802136-aj553spqnkdcin8rpcpegs11j2p16jrc.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDc7VYUdU6kRkoRTToiCn1rh-W0wJvhLWk"
+          "current_key": "AIzaSyA_i7bTQxl39cDF2RFwF0bYFhhu-WMk09Q"
         }
       ],
       "services": {
