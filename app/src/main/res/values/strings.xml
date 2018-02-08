@@ -50,6 +50,10 @@
     <string name="fragment_input_hostname_hostname">Server</string>
     <string name="fragment_input_hostname_server_hint">open.rocket.chat</string>
     <string name="fragment_input_hostname_connect">CONNECT</string>
+    <string name="fragment_input_certificate_url_download_url">Download URL</string>
+    <string name="fragment_input_certificate_url_download_url_hint">download.url.com</string>
+    <string name="fragment_input_certificate_url_password_hint">Certificate password</string>
+    <string name="fragment_input_certificate_url_download">DOWNLOAD</string>
     <string name="fragment_login_username_or_email">Username or email</string>
     <string name="fragment_login_password">Password</string>
     <string name="fragment_login_sign_up">SIGN UP</string>
@@ -68,6 +72,7 @@
     <string name="input_hostname_invalid_server_message">Invalid server version</string>
     <string name="make_sure_your_server_version_is_up_to_date">Make sure your Rocket.Chat server version is up to date</string>
     <string name="connection_error_try_later">There\'s a connection error. Please try later.</string>
+    <string name="connection_error_certificate_password_combination">Invalid certificate/password combination.</string>
 
     <string name="version_info_text">Version: %s</string>
     <string name="two_factor_authentication_title">Two-factor authentication</string>

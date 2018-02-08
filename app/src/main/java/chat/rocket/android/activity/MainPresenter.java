@@ -137,6 +137,7 @@ public class MainPresenter extends BasePresenter<MainContract.View>
     @Override
     public void prepareToLogout() {
         clearSubscriptions();
+        RocketChatCache.INSTANCE.setCertAlias(null);
     }
 
     private Pair<String, String> getLogoAndSiteNamePair(Pair<Optional<PublicSetting>, Optional<PublicSetting>> settingsPair) {
@@ -164,6 +165,8 @@ public class MainPresenter extends BasePresenter<MainContract.View>
         String hostname = RocketChatCache.INSTANCE.getSelectedServerHostname();
         String roomId = RocketChatCache.INSTANCE.getSelectedRoomId();
 
+        methodCallHelper.setCurrentRoom(roomId)
+                .continueWith(new LogIfError());
         if (roomId == null || roomId.length() == 0) {
             view.showHome();
             return;

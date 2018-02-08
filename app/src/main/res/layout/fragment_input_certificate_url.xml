@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:background="?attr/colorPrimaryDark"
+  android:padding="@dimen/margin_8"
+  tools:context="chat.rocket.android.fragment.add_server.InputHostnameFragment">
+
+  <android.support.constraint.ConstraintLayout
+      android:id="@+id/container"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:background="@drawable/container_bg"
+      android:minWidth="280dp"
+      android:paddingBottom="@dimen/margin_8"
+      android:paddingEnd="@dimen/margin_16"
+      android:paddingLeft="@dimen/margin_16"
+      android:paddingRight="@dimen/margin_16"
+      android:paddingStart="@dimen/margin_16"
+      android:paddingTop="@dimen/margin_16"
+      app:layout_constraintBottom_toTopOf="@+id/version_info"
+      app:layout_constraintLeft_toLeftOf="parent"
+      app:layout_constraintRight_toRightOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintVertical_bias="0.584">
+
+    <TextView
+        android:id="@+id/downloadUrlTextViewTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="4dp"
+        android:paddingStart="4dp"
+        android:text="@string/fragment_input_certificate_url_download_url"
+        android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+        app:layout_constraintBottom_toTopOf="@+id/editor_download_url"
+        app:layout_constraintLeft_toLeftOf="@+id/editor_download_url"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/editor_download_url"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/fragment_input_certificate_url_download_url_hint"
+        android:imeOptions="actionSend"
+        android:inputType="textUri"
+        android:maxLines="1"
+        app:layout_constraintBottom_toTopOf="@+id/editor_password"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/downloadUrlTextViewTextView" />
+
+    <EditText
+        android:id="@+id/editor_password"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/fragment_input_certificate_url_password_hint"
+        android:ems="10"
+        android:inputType="textPassword"
+        app:layout_constraintBottom_toTopOf="@+id/btn_connect"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editor_download_url" />
+
+    <Button
+        android:id="@+id/btn_connect"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_8"
+        android:text="@string/fragment_input_certificate_url_download"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editor_password" />
+
+  </android.support.constraint.ConstraintLayout>
+
+  <chat.rocket.android.widget.WaitingView
+    android:id="@+id/waiting"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:visibility="gone"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintBottom_toTopOf="@+id/version_info"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintRight_toRightOf="parent"/>
+
+  <TextView
+    android:id="@+id/version_info"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:textColor="@android:color/white"
+    android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+    app:layout_constraintRight_toRightOf="parent"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintBottom_toBottomOf="parent" />
+</android.support.constraint.ConstraintLayout>

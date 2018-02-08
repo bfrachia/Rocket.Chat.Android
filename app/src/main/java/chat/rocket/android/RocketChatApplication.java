@@ -10,10 +10,7 @@ import com.evernote.android.job.JobManager;
 import java.util.List;
 
 import chat.rocket.android.helper.Logger;
-import chat.rocket.android.helper.OkHttpHelper;
 import chat.rocket.android.service.ConnectivityManager;
-import chat.rocket.android.widget.RocketChatWidgets;
-import chat.rocket.android_ddp.DDPClient;
 import chat.rocket.core.models.ServerInfo;
 import chat.rocket.persistence.realm.RealmStore;
 import chat.rocket.persistence.realm.RocketChatPersistenceRealm;
@@ -35,9 +32,10 @@ public class RocketChatApplication extends MultiDexApplication {
     @Override
     public void onCreate() {
         super.onCreate();
+        instance = this;
         RocketChatCache.INSTANCE.initialize(this);
         JobManager.create(this).addJobCreator(new RocketChatJobCreator());
-        DDPClient.initialize(OkHttpHelper.INSTANCE.getClientForWebSocket());
+
         Fabric.with(this, new Crashlytics());
 
         RocketChatPersistenceRealm.init(this);
@@ -46,8 +44,6 @@ public class RocketChatApplication extends MultiDexApplication {
         for (ServerInfo serverInfo : serverInfoList) {
             RealmStore.put(serverInfo.getHostname());
         }
-
-        RocketChatWidgets.initialize(this, OkHttpHelper.INSTANCE.getClientForDownloadFile());
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -63,6 +59,5 @@ public class RocketChatApplication extends MultiDexApplication {
             Logger.INSTANCE.report(e);
         });
 
-        instance = this;
     }
 }
