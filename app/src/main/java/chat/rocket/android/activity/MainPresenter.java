@@ -14,6 +14,7 @@ import chat.rocket.android.RocketChatCache;
 import chat.rocket.android.api.MethodCallHelper;
 import chat.rocket.android.helper.LogIfError;
 import chat.rocket.android.helper.Logger;
+import chat.rocket.android.helper.OkHttpHelper;
 import chat.rocket.android.log.RCLog;
 import chat.rocket.android.service.ConnectivityManagerApi;
 import chat.rocket.android.service.ServerConnectivity;
@@ -138,6 +139,7 @@ public class MainPresenter extends BasePresenter<MainContract.View>
     public void prepareToLogout() {
         clearSubscriptions();
         RocketChatCache.INSTANCE.setCertAlias(null);
+        OkHttpHelper.INSTANCE.resetClients();
     }
 
     private Pair<String, String> getLogoAndSiteNamePair(Pair<Optional<PublicSetting>, Optional<PublicSetting>> settingsPair) {

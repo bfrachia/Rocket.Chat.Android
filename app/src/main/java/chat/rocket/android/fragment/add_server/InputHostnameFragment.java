@@ -1,6 +1,7 @@
 package chat.rocket.android.fragment.add_server;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.security.KeyChain;
 import android.security.KeyChainAliasCallback;
@@ -16,6 +17,7 @@ import chat.rocket.android.BuildConfig;
 import chat.rocket.android.LaunchUtil;
 import chat.rocket.android.R;
 import chat.rocket.android.RocketChatCache;
+import chat.rocket.android.activity.SSLConfigActivity;
 import chat.rocket.android.fragment.AbstractFragment;
 import chat.rocket.android.helper.OkHttpHelper;
 import chat.rocket.android.helper.TextUtils;
@@ -70,10 +72,15 @@ public class InputHostnameFragment extends AbstractFragment
 
         btnRestart.setOnClickListener(v -> {
             hideSoftKeyboard();
+            OkHttpHelper.INSTANCE.resetClients();
             RocketChatCache.INSTANCE.setCertAlias(null);
             btnRestart.setVisibility(View.GONE);
-            askForCertificate();
+//            askForCertificate();
 
+
+            Intent intent = new Intent(getContext(), SSLConfigActivity.class);
+            startActivity(intent);
+            finish();
         });
     }
 

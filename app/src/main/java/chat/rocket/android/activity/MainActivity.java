@@ -416,8 +416,9 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
     public void onLogout() {
         presenter.prepareToLogout();
         if (RocketChatCache.INSTANCE.getSelectedServerHostname() == null) {
+            Intent intent = new Intent(this, SSLConfigActivity.class);
+            startActivity(intent);
             finish();
-            LaunchUtil.showMainActivity(this);
         } else {
             onHostnameUpdated();
         }
