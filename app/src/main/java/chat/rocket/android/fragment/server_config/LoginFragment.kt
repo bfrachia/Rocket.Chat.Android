@@ -10,7 +10,9 @@ import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import chat.rocket.android.R
+import chat.rocket.android.RocketChatCache
 import chat.rocket.android.api.MethodCallHelper
+import chat.rocket.android.helper.OkHttpHelper
 import chat.rocket.android.layouthelper.oauth.OAuthProviderInfo
 import chat.rocket.android.log.RCLog
 import chat.rocket.core.models.LoginServiceConfiguration
@@ -52,6 +54,7 @@ class LoginFragment : AbstractServerConfigFragment(), LoginContract.View {
 
         val btnEmail = rootView.findViewById<Button>(R.id.btn_login_with_email)
         val btnUserRegistration = rootView.findViewById<Button>(R.id.btn_user_registration)
+        val btnRestart = rootView.findViewById<Button>(R.id.btn_restart)
         txtUsername = rootView.findViewById(R.id.editor_username)
         txtPasswd = rootView.findViewById(R.id.editor_passwd)
         textInputUsername = rootView.findViewById(R.id.text_input_username)
@@ -67,17 +70,26 @@ class LoginFragment : AbstractServerConfigFragment(), LoginContract.View {
             UserRegistrationDialogFragment.create(hostname, txtUsername.text.toString(), txtPasswd.text.toString())
                     .show(fragmentManager!!, "UserRegistrationDialogFragment")
         }
+
+
+        btnRestart.setOnClickListener({
+            OkHttpHelper.resetClients()
+            RocketChatCache.setCertAlias(null)
+            btnRestart.visibility = View.GONE
+
+            goBack()
+        })
     }
 
     fun setUpRxBinders() {
         RxTextView.textChanges(txtUsername).subscribe { text ->
             if (!TextUtils.isEmpty(text) && textInputUsername.isErrorEnabled)
-                textInputUsername.setErrorEnabled(false)
+                textInputUsername.isErrorEnabled = false
         }
 
         RxTextView.textChanges(txtPasswd).subscribe { text ->
             if (!TextUtils.isEmpty(text) && textInputPassword.isErrorEnabled)
-                textInputPassword.setErrorEnabled(false)
+                textInputPassword.isErrorEnabled = false
         }
 
     }
@@ -88,13 +100,13 @@ class LoginFragment : AbstractServerConfigFragment(), LoginContract.View {
     }
 
     override fun showErrorInUsernameEditText() {
-        textInputUsername.setErrorEnabled(true);
-        textInputUsername.setError("Enter a Username")
+        textInputUsername.isErrorEnabled = true
+        textInputUsername.error = "Enter a Username"
     }
 
     override fun showErrorInPasswordEditText() {
-        textInputPassword.setErrorEnabled(true);
-        textInputPassword.setError("Enter a Password")
+        textInputPassword.isErrorEnabled = true
+        textInputPassword.error = "Enter a Password"
     }
 
     override fun hideLoader() {
