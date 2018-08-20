@@ -1,8 +1,6 @@
 apply plugin: 'com.android.application'
-apply plugin: 'io.fabric'
 
 repositories {
-    maven { url 'https://maven.fabric.io/public' }
 //    maven { url 'https://github.com/uPhyca/stetho-realm/raw/master/maven-repo' }
     maven { url 'https://github.com/WickeDev/stetho-realm/raw/master/maven-repo' }
 }
@@ -21,8 +19,8 @@ android {
         applicationId "chat.rocket.android"
         minSdkVersion 16
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 58
-        versionName "1.1.0"
+        versionCode 60
+        versionName "1.1.2"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
@@ -134,9 +132,6 @@ dependencies {
     annotationProcessor "frankiesardo:icepick-processor:$icepickVersion"
     implementation "com.github.hotchemi:permissionsdispatcher:$permissionsdispatcherVersion"
     annotationProcessor "com.github.hotchemi:permissionsdispatcher-processor:$permissionsdispatcherVersion"
-    implementation('com.crashlytics.sdk.android:crashlytics:2.6.8@aar') {
-        transitive = true;
-    }
     implementation(extraDependencies.crouton) {
         exclude group: 'com.android.support', module: 'support-v4'
     }

@@ -1,6 +1,5 @@
 package chat.rocket.android.helper;
 
-import com.crashlytics.android.Crashlytics;
 import com.google.firebase.crash.FirebaseCrash;
 
 import bolts.Continuation;
@@ -20,7 +19,6 @@ public class LogIfError implements Continuation {
             }
 
             FirebaseCrash.report(task.getError());
-            Crashlytics.logException(task.getError());
         }
         return task;
     }

@@ -1,7 +1,6 @@
 package chat.rocket.android.helper
 
 import chat.rocket.android.BuildConfig
-import com.crashlytics.android.Crashlytics
 import com.google.firebase.crash.FirebaseCrash
 
 object Logger {
@@ -11,6 +10,5 @@ object Logger {
             throwable.printStackTrace()
         }
         FirebaseCrash.report(throwable)
-        Crashlytics.logException(throwable)
     }
 }

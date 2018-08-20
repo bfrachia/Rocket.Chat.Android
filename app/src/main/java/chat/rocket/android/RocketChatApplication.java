@@ -4,7 +4,6 @@ import android.os.Build;
 import android.support.multidex.MultiDexApplication;
 import android.support.v7.app.AppCompatDelegate;
 
-import com.crashlytics.android.Crashlytics;
 import com.evernote.android.job.JobManager;
 
 import java.util.List;
@@ -14,7 +13,6 @@ import chat.rocket.android.service.ConnectivityManager;
 import chat.rocket.core.models.ServerInfo;
 import chat.rocket.persistence.realm.RealmStore;
 import chat.rocket.persistence.realm.RocketChatPersistenceRealm;
-import io.fabric.sdk.android.Fabric;
 import io.reactivex.exceptions.UndeliverableException;
 import io.reactivex.plugins.RxJavaPlugins;
 
@@ -35,8 +33,6 @@ public class RocketChatApplication extends MultiDexApplication {
         instance = this;
         RocketChatCache.INSTANCE.initialize(this);
         JobManager.create(this).addJobCreator(new RocketChatJobCreator());
-
-        Fabric.with(this, new Crashlytics());
 
         RocketChatPersistenceRealm.init(this);
 
